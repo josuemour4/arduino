@@ -39,9 +39,12 @@ void setup() {
         |
         |-----> Pino Digital (Ex.: D2)
         |
-       === <-- Botão (fechado = LOW, aberto = HIGH)
+       === <-- Button (Close = LOW, Open = HIGH)
         |
        GND
+
+The value on the pin will always be 1 until the button is pressed, 
+thus changing the current flow and changing the pin value from 1 to 0.
 */
   Serial.begin(9600);
   

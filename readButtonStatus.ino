@@ -29,6 +29,20 @@ const unsigned long debounceDelay = 50;
 void setup() {
   pinMode(LED_PIN, OUTPUT);
   pinMode(BUTTON_PIN, INPUT_PULLUP);  // Usa resistor pull-up interno
+  /* 
+   BUTTON PULL-UP (ARDUINO)
+   -----------------------
+       +5V (VCC)
+        |
+        |
+       [ ] <-- Resistor Pull-Up (10kΩ)
+        |
+        |-----> Pino Digital (Ex.: D2)
+        |
+       === <-- Botão (fechado = LOW, aberto = HIGH)
+        |
+       GND
+*/
   Serial.begin(9600);
   
   // Initialize the LED as off

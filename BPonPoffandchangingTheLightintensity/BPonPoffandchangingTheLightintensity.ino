@@ -10,77 +10,82 @@
   changing the light intensity
   
 */
+  //Definicao dos pinos
+  static int LED = 9;// pino analogico
+  static int BT = 7;
+  static int POT = A1;
 
-static int botao = 7;
-static int led = 9;
+  //Definicao das variaveis de estado
+  bool led_ON_OFF = LOW;
+  bool bt_Ultimo_Estado = LOW;
+  bool bt_Estado;
+  bool analogico = LOW;
 
-static int POT = A1;
-static int POTValor = 0;
-bool condicao =  false;
+  //Definicao das variaveis de debounce
+  unsigned long deBounceDelay = 50;
+  unsigned long lastDebounce;
 
-//Possivel estado para botao, led e analog
-bool ledOnOff = LOW;
-bool ultimoPocisaoDoBotao =  HIGH;
-bool analog = LOW;
+  //Variavel para analisar que o botao esta precionado por 5s
+  unsigned long bt_Precionado_5s = 5000;
+  unsigned long cronometro;
 
-unsigned long tempo = 0;
-unsigned long longTempo = 5000;// 5*10^-3 =  5 Segundos
+  //varial para o valor do led no analogico
+  static int valor;
 
-void setup()
-{
-  pinMode(led, OUTPUT);
-  pinMode(botao, INPUT_PULLUP);
-  pinMode(A1,INPUT);
-  Serial.begin(9600);
-}
+  void setup() {
+    pinMode(LED,OUTPUT);
+    pinMode(BT,INPUT_PULLUP);
 
-void loop()
-{
-  bool ler =  digitalRead(botao);
-  
-  if(analog == 1 ) {
-    
-    POTValor = analogRead(POT);
-    int intensidade = map(POTValor, 0, 1023, 0, 255); // Mapeia para 0-255
-    analogWrite(led, (intensidade/4));
-    
-    if(!condicao) {
-      condicao = !condicao;
-      analogWrite(led,intensidade);
-    }
-    
-    if(POTValor < 5 ) {
-      condicao = !condicao;
-      analogWrite(led,LOW);
-      analog = 0;
-    }
-        
-    Serial.println(POTValor);
-    
-    
-  } else {
-    
-    if(ler != ultimoPocisaoDoBotao && analog == LOW){
-    
-      tempo = millis();// Registra o exato momento que o botao foi precionado
-      
-      
-      alterar(ler);
-      digitalWrite(led,ledOnOff);
-      ultimoPocisaoDoBotao = ler;
-    }
-  
-    if(ler == LOW && (millis() - tempo >= longTempo)) {
-      analog = !analog;
-      Serial.println("5 Segundos. Agora o led deve ficar sempre acesso.");
-    }
-    
+    Serial.begin(9600);
   }
-     
-}
 
-void alterar(bool valor){
-  if(valor == LOW) {
-    ledOnOff = !ledOnOff;
-  }  
-}
+  void loop() {
+    bool ler = digitalRead(BT);
+
+    if(ler != bt_Ultimo_Estado){
+      lastDebounce = millis();
+    }
+
+    if((millis() - lastDebounce) > deBounceDelay) {
+
+      //Condicao para acionar o analogico
+      if(ler == 0 && bt_Estado == 0 && led_ON_OFF == HIGH && analogico == LOW){
+        
+        cronometro = millis() - lastDebounce;
+
+        //Ao tempo de 5 millis segundos acionar a condicao abaixo
+        if(cronometro >= bt_Precionado_5s){
+          Serial.println("5 segundos");
+          if(analogico == LOW){
+            analogico = HIGH;
+          }
+        }
+      }
+
+      if(analogico == LOW){
+
+        if(ler != bt_Estado) {
+
+          bt_Estado = ler;
+
+          if(bt_Estado == LOW){
+            led_ON_OFF = !led_ON_OFF;
+            digitalWrite(LED,led_ON_OFF);
+          }
+
+        }
+      } else if( analogico == HIGH) {
+        int valor_Analogico = analogRead(POT);
+        valor = valor_Analogico/4;
+        analogWrite(LED,valor);
+        if(valor < 5){
+          analogWrite(LED,LOW);
+          delay(50);
+          analogico = LOW;
+        }
+      }
+
+    }
+
+    bt_Ultimo_Estado = ler;
+  }

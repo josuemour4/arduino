@@ -67,7 +67,8 @@ void loop() {
   bt_Ultimo_Estado = ler;
 
   if(sistema_ON_OFF == HIGH) {
-    lerPhotoresistor();
+    int par = lerPhotoresistor();
+    alterarLed(par);
   }
 }
 
@@ -80,9 +81,9 @@ void sistemaOnOff() {
   }
 }
 
-void lerPhotoresistor(){
+int lerPhotoresistor(){
   valor = analogRead(phtR);
-  alterarLed(valor);
+  return valor;
 }
 
 void alterarLed(int valorIn) {

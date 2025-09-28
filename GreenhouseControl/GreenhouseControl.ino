@@ -18,6 +18,7 @@ static int phtR = A1;
 static int led_Vermelho = 8;
 static int led_Amarelo = 4;
 static int led_Verde = 2;
+static int buzzer = 12;
 
 //Variaveis de condicao
 bool bt_Ultimo_Estado = LOW;
@@ -34,12 +35,17 @@ static int valor;
 
 static int valorMaximo = 1028;
 
+bool p_80 = LOW;
+bool p_5179 = LOW;
+bool p_50 = LOW;
+
 void setup(){
   pinMode(bt,INPUT_PULLUP);
   pinMode(phtR,INPUT);
   pinMode(led_Vermelho,OUTPUT);
   pinMode(led_Amarelo,OUTPUT);
   pinMode(led_Verde,OUTPUT);
+  pinMode(buzzer,OUTPUT);
 
   Serial.begin(9600);
 }
@@ -68,13 +74,46 @@ void loop() {
 
   if(sistema_ON_OFF == HIGH) {
     int par = lerPhotoresistor();
-    alterarLed(par);
+
+    // Checar valor em porcentagem para o tratamento de tomada de decisao
+    int porcentagem = map(par, 54, 974, 0, 100);
+    if(porcentagem <= 50 ) {
+      //Vermelho
+      ligarLed(led_Verde);
+      p_80 = LOW;
+      if(!p_50) {
+        tocarBuzzer(1);
+        p_50 = !p_50;
+      }      
+      //Serial.println("Escuro");
+    } else if ( porcentagem >= 80) {
+      p_5179 = LOW;
+      if(!p_80) {
+        tocarBuzzer(3);
+        p_80 = !p_80;
+      }
+      ligarLed(led_Vermelho);
+      //Serial.println("Claro");
+    } else {
+      p_50 = LOW;
+      if(!p_5179) {
+        tocarBuzzer(2);
+        p_5179 = !p_5179;
+      }
+      //verde
+      ligarLed(led_Amarelo);
+      //Serial.println("Medade da capacidade");
+    }
+    
   }
 }
 
 void sistemaOnOff() {
   sistema_ON_OFF = !sistema_ON_OFF;
   if(sistema_ON_OFF == LOW) {
+    digitalWrite(led_Amarelo, LOW);
+    digitalWrite(led_Verde, LOW);
+    digitalWrite(led_Vermelho, LOW);
     Serial.println("Sistema desligado");
   } else {
     Serial.println("Sistema ligado");
@@ -86,24 +125,14 @@ int lerPhotoresistor(){
   return valor;
 }
 
-void alterarLed(int valorIn) {
-
-  int porcentagem = map(valorIn, 54, 974, 0, 100);
-  
-  if(porcentagem <= 50 ) {
-    //Vermelho
-    Serial.println("Escuro");
-  } else if ( porcentagem >= 80) {
-    Serial.println("Claro");
-  } else {
-    //verde
-    Serial.println("Medade da capacidade");
-  }
-
+void ligarLed(int ledEscolhido) {
+  digitalWrite(led_Verde, ( ledEscolhido == led_Verde) ? HIGH : LOW);
+  digitalWrite(led_Amarelo, ( ledEscolhido == led_Amarelo) ? HIGH : LOW);
+  digitalWrite(led_Vermelho, (ledEscolhido == led_Vermelho) ? HIGH : LOW);
 }
 
-void ligarLed(int parametro) {
-
+void tocarBuzzer(int par) {
+  Serial.println(par);
 }
 
 

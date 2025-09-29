@@ -87,22 +87,19 @@ void loop() {
       }      
       //Serial.println("Escuro");
     } else if ( porcentagem >= 80) {
+      ligarLed(led_Vermelho);
       p_5179 = LOW;
       if(!p_80) {
         tocarBuzzer(3);
         p_80 = !p_80;
       }
-      ligarLed(led_Vermelho);
-      //Serial.println("Claro");
     } else {
+      ligarLed(led_Amarelo);
       p_50 = LOW;
       if(!p_5179) {
         tocarBuzzer(2);
         p_5179 = !p_5179;
       }
-      //verde
-      ligarLed(led_Amarelo);
-      //Serial.println("Medade da capacidade");
     }
     
   }
@@ -133,6 +130,8 @@ void ligarLed(int ledEscolhido) {
 
 void tocarBuzzer(int par) {
   Serial.println(par);
+  for(int x =0; x < par;x++){
+	tone(buzzer,500,500);
+	delay(1500);
+	}
 }
-
-

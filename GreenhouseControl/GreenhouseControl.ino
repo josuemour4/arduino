@@ -111,6 +111,9 @@ void sistemaOnOff() {
     digitalWrite(led_Amarelo, LOW);
     digitalWrite(led_Verde, LOW);
     digitalWrite(led_Vermelho, LOW);
+	p_80 = LOW;
+    p_5179 = LOW;
+    p_50 = LOW;
     Serial.println("Sistema desligado");
   } else {
     Serial.println("Sistema ligado");

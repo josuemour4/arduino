@@ -12,6 +12,7 @@ static int valor = 0;
 
 void setup()
 {
+  pinMode(LDR, INPUT);
   pinMode(LED, OUTPUT);
 }
 

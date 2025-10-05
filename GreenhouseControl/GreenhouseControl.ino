@@ -33,8 +33,6 @@ static unsigned long debounceDelay = 50;
 //Variavel para armazenar o valor do analogico.
 static int valor;
 
-static int valorMaximo = 1028;
-
 bool p_80 = LOW;
 bool p_5179 = LOW;
 bool p_50 = LOW;

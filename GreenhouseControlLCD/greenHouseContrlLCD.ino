@@ -95,6 +95,7 @@ void loop() {
       exibirValor = "Luz: Baixa";
       ligarLed(led_Verde);
       p_80 = LOW;
+	  p_5179 = LOW;
       if(!p_50) {
         tocarBuzzer(1);
         mostrarValorLCD(exibirValor,porcentagem);

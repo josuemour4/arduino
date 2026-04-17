@@ -49,7 +49,7 @@ void loop()
 {
   exibir(contador);
   contador++;
-  if(contador == 11){
+  if(contador > 10){
     contador = 0;
     inicio();
   }
@@ -57,11 +57,11 @@ void loop()
   
 }
 
-void exibir(int parametro) {
+void exibir(int numero) {
   for(int x = a; x <= ponto; x++){
       int indice = x-2;
     Serial.println(indice);
-		if(numeros[parametro][indice]==LOW){
+		if(numeros[numero][indice]==LOW){
 			 digitalWrite(x,LOW);
         } else {
           digitalWrite(x,HIGH);

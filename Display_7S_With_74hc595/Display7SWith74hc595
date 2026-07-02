@@ -1,0 +1,65 @@
+/* ********************************************************************** 
+  Projeto: 7-SegmentDisplay - v1.0
+  Autor: Josue Moura
+  Data: 03/07/2026
+  
+  Description: This sketch illustrates the controlling a 7-segment display with
+  a 74HC595 shift register.
+  
+*/
+const byte Clock = 2;
+const byte ST    = 3;
+const byte DADO  = 4;
+
+/*
+  Ordem dos bits:
+
+  bit7 bit6 bit5 bit4 bit3 bit2 bit1 bit0
+   dp    g    f    e    d    c    b    a
+
+*/
+
+// G e F foram trocados de ordem, por causa do simulador Tinkercad
+
+byte numeros[10] = {
+
+  B11011111, // 0
+  B10000110, // 1
+  B10111011, // 2
+  B10101111, // 3
+  B11100110, // 4
+  B11101101, // 5
+  B11111101, // 6
+  B10000111, // 7
+  B11111111, // 8
+  B11101111  // 9
+};
+
+byte count = 0;
+
+void setup()
+{
+  pinMode(Clock, OUTPUT);
+  pinMode(ST, OUTPUT);
+  pinMode(DADO, OUTPUT);
+
+  Serial.begin(9600);
+}
+
+void loop()
+{
+  digitalWrite(ST, LOW);
+
+  shiftOut(DADO, Clock, MSBFIRST, numeros[count]);
+
+  digitalWrite(ST, HIGH);
+
+  delay(1000);
+
+  count++;
+
+  if (count > 9)
+  {
+    count = 0;
+  }
+}
